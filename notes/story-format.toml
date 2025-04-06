@@ -1,32 +1,35 @@
 [config]
-start = "pageId1"
+title = "Story Title"
+start = "passage1"
 backgroundColor = "#rrggbb"
 textColor = "#rrggbb"
-fontFamily = "GoogleFontsFamily"
+fontFamily = "Google Font Family"
 fontSize = "NNpx"
+imageRendering = "smooth|pixelated"  # corresponds to image-rendering CSS property
+imageBaseURL = "URL"  # relative img src URLs resolved relative to this
 
-[pageId1]
-imageSrc = "url"
-imageWidth = "NNpx"
-floatDir = "left|right"
+[passage1]
+name = "Name of Passage"
 text = """
 Story text
 """
 
 # optional, if we want an image
-[pageId1.img]
+[passage1.img]
 src = "url"
 width = "NNpx"
-floatDir = "left|right"
+# choose one of the below two properties. "float" takes precedence
+float = "left|right"
+align = "left|center|right"
 
-[[pageId1.choices]]
+[[passage1.choices]]
 text = "Choice #1"
-destId = "pageId2"
+destId = "passage2"
 
-[[pageId1.choices]]
+[[passage1.choices]]
 text = "Choice #2"
-destId = "pageId3"
+destId = "passage3"
 
-[[pageId1.choices]]
+[[passage1.choices]]
 text = "Choice #3"
-destId = "pageId4"
+destId = "passage4"
