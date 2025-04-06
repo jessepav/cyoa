@@ -26,15 +26,20 @@ html {
 #passage-name {
   font-size: 1.3rem;
   text-align: center;
-  padding: 0.5rem 1rem;
+  padding: 2rem 0.5rem;
 }
 
 #choices {
-  margin-top: 1.5rem;
+  margin: 1.5rem auto;
   padding-top: 1.5rem;
   border-top: 1px solid var(--text-color);
   max-width: 550px;
   clear: both;
+}
+
+#choice-list li {
+  margin-bottom: 0.8em;
+  cursor: pointer;
 }
 
 /* The below classes are used for the #passage-image div */

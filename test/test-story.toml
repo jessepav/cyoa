@@ -1,0 +1,55 @@
+[config]
+title = "Story of Bob"
+backgroundColor = "#333355"
+textColor = "white"
+fontFamily = "Roboto Mono"
+fontSize = "15px"
+imageRendering = "pixelated"
+imageBaseURL = "https://illcode.com/projects/cyoa/test/"
+startId = "hello"
+
+[hello]
+name = "Bob's Story"
+text = """
+Hello, this is the story of Bob.
+
+Bob is a nice mushroom.
+"""
+
+[hello.img]
+src = "bob.png"
+width = "256px"
+float = "left"
+align = "center"
+
+[[hello.choices]]
+text = "Feed Bob Water"
+destId = "water"
+
+[[hello.choices]]
+text = "Eat Bob"
+destId = "eat"
+
+[water]
+name = "Yummy Water"
+text = "Bob drinks a lot of water and is happy"
+
+[[water.choices]]
+text = "Eat him anyway"
+destId = "eat"
+
+[[water.choices]]
+text = "Say hello again"
+destId = "hello"
+
+[eat]
+name = "Bob is Eaten"
+text = """
+Oh no, Bob was munched up.
+
+Yummy yummy gu.
+"""
+
+[[eat.choices]]
+text = "Resurrect Bob"
+destId = "hello"
