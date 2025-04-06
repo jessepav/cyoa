@@ -1,0 +1,15 @@
+node_modules/
+
+GTAGS
+GRTAGS
+GPATH
+gtags.files
+
+tags
+*.tags
+
+logs/
+build/
+local/
+
+Session*.vim

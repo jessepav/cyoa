@@ -1,0 +1,32 @@
+[config]
+start = "pageId1"
+backgroundColor = "#rrggbb"
+textColor = "#rrggbb"
+fontFamily = "GoogleFontsFamily"
+fontSize = "NNpx"
+
+[pageId1]
+imageSrc = "url"
+imageWidth = "NNpx"
+floatDir = "left|right"
+text = """
+Story text
+"""
+
+# optional, if we want an image
+[pageId1.img]
+src = "url"
+width = "NNpx"
+floatDir = "left|right"
+
+[[pageId1.choices]]
+text = "Choice #1"
+destId = "pageId2"
+
+[[pageId1.choices]]
+text = "Choice #2"
+destId = "pageId3"
+
+[[pageId1.choices]]
+text = "Choice #3"
+destId = "pageId4"
