@@ -22,7 +22,7 @@ html {
   max-width: 750px;
   margin: 1rem auto;
   transition: opacity 0.3s;
-  opacity: 0;
+  opacity: 1;
 }
 
 #passage-name {

@@ -125,13 +125,14 @@ async function main() {
         }
     });
     mainHolderEl.addEventListener('transitionend', () => {
-        if (mainHolderEl.style.opacity == '0')
+        if (currentPassageId && mainHolderEl.style.opacity == '0')
             showPassage(currentPassageId);
     });
     if (location.hash)
-        showPassage(location.hash.slice(1));
+        currentPassageId = location.hash.slice(1);
     else
-        showPassage(config.startId);
+        currentPassageId = config.startId;
+    mainHolderEl.style.opacity = '0';  // this will trigger the transitionend listener
 }
 
 main();
