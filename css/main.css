@@ -41,6 +41,10 @@ html {
 #choice-list li {
   margin-bottom: 0.8em;
   cursor: pointer;
+  width: fit-content;
+  padding: 2px 8px;
+  background-color: rgba(from var(--text-color) r g b / 0.15);
+  border-radius: 10px;
 }
 
 /* The below classes are used for the #passage-image div */
