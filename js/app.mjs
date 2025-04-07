@@ -129,13 +129,13 @@ async function main() {
             link.rel = "stylesheet";
             link.href = config.fontLinkHref;
             document.head.appendChild(link);
-            // await document.fonts.ready;
         } else if (config.fontCSS) {
             const style = document.createElement('style');
             style.textContent = config.fontCSS;
             document.head.appendChild(style);
         }
         rootEl.style.setProperty('--font-family', `'${config.fontFamily}'`);
+        await document.fonts.ready;
     }
     if (config.useBold) {
         passageNameEl.style.fontWeight = 'bold';
