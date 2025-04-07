@@ -24,7 +24,6 @@ fontCSS = """
 useBold = true
 
 imageRendering = "auto|smooth|pixelated"  # corresponds to image-rendering CSS property
-imageBaseURL = "https://site.com/img"  # absolute URL against which relative img src URLs are resolved
 
 # If no fragment identifier is given in the browser href, we start here
 startId = "passage1"
@@ -49,7 +48,7 @@ Paragraph text the first.
 
 # optional, if we want an image
 [passage1.img]
-src = "url"
+src = "url"  # relative URLs will be resolved against the URL of the story file
 # optional width and height, to scale the image via CSS
 width = "128px"
 height = "128px"

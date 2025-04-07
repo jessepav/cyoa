@@ -35,7 +35,7 @@ also a rabbit named Glowy who can glow in the dark. ==
 """
 
 [hello.img]
-src = "test/bob.png"
+src = "bob.png"
 width = "256px"
 float = "left"
 
@@ -56,7 +56,7 @@ choices = [
 ]
 
 [water.img]
-src = "test/bob.png"
+src = "bob.png"
 width = "484px"
 height = "212px"
 align = "center"

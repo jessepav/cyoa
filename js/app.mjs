@@ -8,7 +8,7 @@ const passageImageEl = document.getElementById('passage-image');
 const passageTextEl = document.getElementById('passage-text');
 const choiceListEl = document.getElementById('choice-list');
 
-let imageBaseURL;
+let storyURL;
 
 let story;
 let choicePassageIds = [];
@@ -64,7 +64,7 @@ function showPassage(id) {
     passageImageEl.className = "";
     if (passage.img) {
         const img = document.createElement('img');
-        img.src = new URL(passage.img.src, imageBaseURL).href;
+        img.src = new URL(passage.img.src, storyURL).href;
         if (passage.img.width)
             img.style.width = passage.img.width;
         if (passage.img.height)
@@ -96,21 +96,21 @@ function showPassage(id) {
 
 async function main() {
     const searchParams = new URLSearchParams(location.search);
-    const tomlUrl = searchParams.get('story');
-    if (!tomlUrl) {
+    storyURL = searchParams.get('story');
+    if (!storyURL) {
         showError('No "story" search parameter given');
         return;
     }
+    storyURL = new URL(storyURL, location.href).href;
     try {
-        const tomlText = await fetch(tomlUrl, { cache: 'no-cache' }).then(res => res.text());
-        story = TOML.parse(tomlText);
+        const storyText = await fetch(storyURL, { cache: 'no-cache' }).then(res => res.text());
+        story = TOML.parse(storyText);
     } catch(err) {
-        showError(`Error reading TOML from ${tomlUrl}:\n\n${err.message}`);
+        showError(`Error reading story from ${storyURL}:\n\n${err.message}`);
         return;
     }
 
     const config = story.config ?? {};
-    imageBaseURL = config.imageBaseURL ?? location.href;
     if (config.title)
         document.title = config.title;
     if (config.backgroundColor)
