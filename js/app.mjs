@@ -67,11 +67,15 @@ function showPassage(id) {
         img.src = new URL(passage.img.src, imageBaseURL).href;
         if (passage.img.width)
             img.style.width = passage.img.width;
+        if (passage.img.height)
+            img.style.height = passage.img.height;
 
         if (passage.img.float)
             passageImageEl.className = `float-${passage.img.float}`;
         else if (passage.img.align)
             passageImageEl.className = `align-${passage.img.align}`;
+        else
+            passageImageEl.className = "align-center";
 
         passageImageEl.appendChild(img);
     }

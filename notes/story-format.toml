@@ -1,13 +1,14 @@
 [config]
 title = "Story Title"
-backgroundColor = "#rrggbb"
-textColor = "#rrggbb"
+backgroundColor = "rgb(r g b)"
+textColor = "rgb(r g b)"
 maxWidth = "750px"  # the max width of the story holder
 
-fontSize = "NNpx"
-fontFamily = "Family Name"  # The CSS font-family name
+fontSize = "16px"
+fontFamily = "Merriweather"  # The CSS font-family name
 # URL that will be used to load the font via a <link rel="stylesheet" href="..."> tag
-fontLinkHref = "https://fonts.googleapis.com/css2?family=..."
+fontLinkHref = """https://fonts.googleapis.com/css2?family=Merriweather\
+                    :ital,opsz,wght@0,18..144,300..900;1,18..144,300..900"""
 # Or, you can give CSS directly to use a @font-face at-rule to define a custom font
 fontCSS = """
 @font-face {
@@ -23,6 +24,7 @@ useBold = true
 imageRendering = "auto|smooth|pixelated"  # corresponds to image-rendering CSS property
 imageBaseURL = "https://site.com/img"  # absolute URL against which relative img src URLs are resolved
 
+# If no fragment identifier is given in the browser href, we start here
 startId = "passage1"
 
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble
@@ -46,11 +48,17 @@ Paragraph text the first.
 # optional, if we want an image
 [passage1.img]
 src = "url"
-width = "NNpx"
-# choose one of the below two properties. "float" takes precedence
+# optional width and height, to scale the image via CSS
+width = "128px"
+height = "128px"
+# You can float the image beside the text, or choose the alignment on its own line
+# above the text. If neither is given, it's center-aligned. If both are given,
+# "float" takes precedence.
 float = "left|right"
 align = "left|center|right"
 
+# The exit choices for the passage are given as the text to display,
+# and the ID of the destination passage.
 [[passage1.choices]]
 text = "Choice #1"
 destId = "passage2"

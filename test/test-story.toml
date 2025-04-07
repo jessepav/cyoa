@@ -49,11 +49,12 @@ destId = "eat"
 
 [water]
 name = "Yummy Water"
-text = "== Bob drinks <i>a lot</i> of water and is happy.<br>He grew really big! =="
+text = "== Bob drinks <i>a lot</i> of water and is happy.<br>He grew really fat! =="
 
 [water.img]
 src = "test/bob.png"
-width = "384px"
+width = "484px"
+height = "212px"
 align = "center"
 
 [[water.choices]]
