@@ -1,14 +1,26 @@
 [config]
 title = "Story of Bob"
+
 backgroundColor = "#333355"
 textColor = "white"
-fontFamily = "Underdog"
+
 fontSize = "20px"
-fontURL = "https://fonts.googleapis.com/css2?family=Underdog"
+fontFamily = "Underdog"
+fontLinkHref = "https://fonts.googleapis.com/css2?family=Underdog"
+# fontFamily = "BryanTalbot"
+# fontCSS = """
+# @font-face {
+#   font-family: "BryanTalbot";
+#   src: url("https://site.com/resources/fonts/comicraft/otf/CCBryanTalbotRegular.otf") format("opentype");
+# }
+# """
+
+useBold = false
+
 imageRendering = "pixelated"
 # imageBaseURL = "https://site.com/img/"
+
 startId = "hello"
-useBold = true
 
 [hello]
 name = "Bob's Story"

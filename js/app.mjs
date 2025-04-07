@@ -103,12 +103,16 @@ async function main() {
     if (config.imageRendering)
         rootEl.style.setProperty("--image-rendering", config.imageRendering);
     if (config.fontFamily) {
-        if (config.fontURL) {
+        if (config.fontLinkHref) {
             const link = document.createElement('link');
             link.rel = "stylesheet";
-            link.href = config.fontURL;
+            link.href = config.fontLinkHref;
             document.head.appendChild(link);
             // await document.fonts.ready;
+        } else if (config.fontCSS) {
+            const style = document.createElement('style');
+            style.textContent = config.fontCSS;
+            document.head.appendChild(style);
         }
         rootEl.style.setProperty('--font-family', `'${config.fontFamily}'`);
     }

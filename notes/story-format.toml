@@ -5,15 +5,23 @@ textColor = "#rrggbb"
 
 fontSize = "NNpx"
 fontFamily = "Family Name"  # The CSS font-family name
-# And below is the URL that will be used to load the font via a <link rel="stylesheet"> tag
-fontURL = "https://fonts.googleapis.com/css2?family=..."
+# URL that will be used to load the font via a <link rel="stylesheet" href="..."> tag
+fontLinkHref = "https://fonts.googleapis.com/css2?family=..."
+# Or, you can give CSS directly to use a @font-face at-rule to define a custom font
+fontCSS = """
+@font-face {
+  font-family: "FontOfFury";
+  src: url("font-of-fury.otf") format("opentype");
+}
+"""
 
 # Should we use a bold font in the passage name and choice list?
 # Some fonts don't have a bold variant, and the browser needs to synthesize it.
 useBold = true
 
-imageRendering = "smooth|pixelated"  # corresponds to image-rendering CSS property
-imageBaseURL = "URL"  # relative img src URLs resolved relative to this
+imageRendering = "auto|smooth|pixelated"  # corresponds to image-rendering CSS property
+imageBaseURL = "https://site.com/img"  # absolute URL against which relative img src URLs are resolved
+
 startId = "passage1"
 
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble
