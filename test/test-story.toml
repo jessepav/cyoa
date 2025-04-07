@@ -27,7 +27,10 @@ name = "Bob's Story"
 text = """
 Hello, this is the story of <u>Bob</u>.
 
-Bob is a nice mushroom.
+Bob is a nice mushroom. He lives in a forest with other mushrooms and
+also a rabbit named Glowy who can glow in the dark. ==
+
+   == They are a nice group of forest creatures. ==
 """
 
 [hello.img]
@@ -45,7 +48,7 @@ destId = "eat"
 
 [water]
 name = "Yummy Water"
-text = "Bob drinks <i>a lot</i> of water and is happy"
+text = "== Bob drinks <i>a lot</i> of water and is happy.<br>He grew really big! =="
 
 [water.img]
 src = "test/bob.png"

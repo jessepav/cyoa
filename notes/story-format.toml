@@ -27,9 +27,19 @@ startId = "passage1"
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble
 
 [passage1]
+# This is shown as a header at the top of the page
 name = "Name of Passage"
+
+# The text of a passage can include <i>, <b>, <u>, <s>, and <br> tags.
+# It is split into paragraphs at blank lines. If a paragraph ends with "==",
+# its text will be right-aligned; if it starts and ends with "==", it will
+# be centered.
 text = """
-Story text
+Paragraph text the first.
+
+    == Paragraph text the second ==
+
+                  Paragraph text the third ==
 """
 
 # optional, if we want an image

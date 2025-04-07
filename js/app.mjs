@@ -33,7 +33,8 @@ function showError(msg) {
     passageTextEl.innerText = msg;
 }
 
-const ALLOWED_HTML_RE = /&lt;(\/?[iubs])&gt;/g;
+const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
+const SPLIT_PAR_RE = /\n{2,}/;
 
 function showPassage(id) {
     const passage = story[id];
@@ -42,9 +43,23 @@ function showPassage(id) {
         return;
     }
     passageNameEl.textContent = passage.name;
-    passageTextEl.innerHTML = escapeHTML(passage.text)
-        .replaceAll("\n\n", "<br><br>")
-        .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>');
+    const pars = passage.text.trim().split(SPLIT_PAR_RE).map(parText => {
+        parText = parText.trim();
+        let textAlign = "left";
+        if (parText.startsWith("==") && parText.endsWith("==")) {
+            parText = parText.slice(2, -2);
+            textAlign = "center";
+        } else if (parText.endsWith("==")) {
+            parText = parText.slice(0, -2);
+            textAlign = "right";
+        }
+        const p = document.createElement('p');
+        p.style.textAlign = textAlign;
+        p.innerHTML = escapeHTML(parText)
+            .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>');
+        return p;
+    });
+    passageTextEl.replaceChildren(...pars);
     passageImageEl.replaceChildren();
     passageImageEl.className = "";
     if (passage.img) {
