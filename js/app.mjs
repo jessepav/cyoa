@@ -1,4 +1,5 @@
 import TOML from '../lib/smol-toml.min.mjs';
+import HJSON from '../lib/hjson.min.mjs';
 
 const rootEl = document.documentElement;
 
@@ -102,11 +103,22 @@ async function main() {
         return;
     }
     storyURL = new URL(storyURL, location.href).href;
+    const storyText = await fetch(storyURL, { cache: 'no-cache' }).then(res => res.ok ? res.text() : undefined);
+    if (!storyText) {
+        showError("Error fetching story from " + storyURL);
+        return;
+    }
     try {
-        const storyText = await fetch(storyURL, { cache: 'no-cache' }).then(res => res.text());
-        story = TOML.parse(storyText);
+        if (storyURL.endsWith(".toml"))
+            story = TOML.parse(storyText);
+        else if (storyURL.endsWith(".hjson"))
+            story = HJSON.parse(storyText);
+        else {
+            showError("Unrecognized story format");
+            return;
+        }
     } catch(err) {
-        showError(`Error reading story from ${storyURL}:\n\n${err.message}`);
+        showError(`Error parsing story:\n\n${err.message}`);
         return;
     }
 
