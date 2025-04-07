@@ -2,6 +2,7 @@
 title = "Story Title"
 backgroundColor = "#rrggbb"
 textColor = "#rrggbb"
+maxWidth = "750px"  # the max width of the story holder
 
 fontSize = "NNpx"
 fontFamily = "Family Name"  # The CSS font-family name

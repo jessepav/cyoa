@@ -3,6 +3,7 @@ title = "Story of Bob"
 
 backgroundColor = "#333355"
 textColor = "white"
+maxWidth = "600px"
 
 fontSize = "20px"
 fontFamily = "Underdog"

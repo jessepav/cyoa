@@ -8,6 +8,7 @@ html {
   --text-color: #e4f7f7;
   --background-color: #524357;
   --image-rendering: auto;
+  --max-width: 750px;
 
   font-family: var(--font-family), serif;
   font-size: var(--font-size);
@@ -19,7 +20,7 @@ html {
 }
 
 #main-holder {
-  max-width: 750px;
+  max-width: var(--max-width);
   margin: 1rem auto;
   transition: opacity 0.3s;
   opacity: 1;

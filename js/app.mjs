@@ -113,6 +113,8 @@ async function main() {
         rootEl.style.setProperty("--background-color", config.backgroundColor);
     if (config.textColor)
         rootEl.style.setProperty("--text-color", config.textColor);
+    if (config.maxWidth)
+        rootEl.style.setProperty("--max-width", config.maxWidth);
     if (config.fontSize)
         rootEl.style.setProperty("--font-size", config.fontSize);
     if (config.imageRendering)
