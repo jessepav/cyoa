@@ -48,6 +48,12 @@ html {
   border-radius: 10px;
 }
 
+@media screen and (width < 600px) {
+  #choice-list li {
+    width: 80%;
+  }
+}
+
 /* The below classes are used for the #passage-image div */
 .float-left { float: left; margin: 0 20px 20px 0; }
 .float-right { float: right; margin: 0 0 20px 20px; }
