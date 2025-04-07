@@ -50,20 +50,16 @@ destId = "eat"
 [water]
 name = "Yummy Water"
 text = "== Bob drinks <i>a lot</i> of water and is happy.<br>He grew really fat! =="
+choices = [
+  { text = "Eat him anyway", destId = "eat" },
+  { text = "Say hello again", destId = "hello" }
+]
 
 [water.img]
 src = "test/bob.png"
 width = "484px"
 height = "212px"
 align = "center"
-
-[[water.choices]]
-text = "Eat him anyway"
-destId = "eat"
-
-[[water.choices]]
-text = "Say hello again"
-destId = "hello"
 
 [eat]
 name = "Bob is Eaten"
@@ -72,7 +68,6 @@ Oh no, Bob was <s>comforted</s> <b>munched</b> up.
 
 Yummy yummy gu.
 """
-
-[[eat.choices]]
-text = "Resurrect Bob"
-destId = "hello"
+choices = [
+  { text = "Resurrect Bob", destId = "hello" }
+]
