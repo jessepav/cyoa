@@ -2,25 +2,26 @@
 title = "Story of Bob"
 backgroundColor = "#333355"
 textColor = "white"
-fontFamily = "Roboto Mono"
-fontSize = "15px"
+fontFamily = "Underdog"
+fontSize = "20px"
+fontURL = "https://fonts.googleapis.com/css2?family=Underdog"
 imageRendering = "pixelated"
-imageBaseURL = "https://illcode.com/projects/cyoa/test/"
+# imageBaseURL = "https://site.com/img/"
 startId = "hello"
+useBold = true
 
 [hello]
 name = "Bob's Story"
 text = """
-Hello, this is the story of Bob.
+Hello, this is the story of <u>Bob</u>.
 
 Bob is a nice mushroom.
 """
 
 [hello.img]
-src = "bob.png"
+src = "test/bob.png"
 width = "256px"
 float = "left"
-align = "center"
 
 [[hello.choices]]
 text = "Feed Bob Water"
@@ -32,7 +33,12 @@ destId = "eat"
 
 [water]
 name = "Yummy Water"
-text = "Bob drinks a lot of water and is happy"
+text = "Bob drinks <i>a lot</i> of water and is happy"
+
+[water.img]
+src = "test/bob.png"
+width = "384px"
+align = "center"
 
 [[water.choices]]
 text = "Eat him anyway"
@@ -45,7 +51,7 @@ destId = "hello"
 [eat]
 name = "Bob is Eaten"
 text = """
-Oh no, Bob was munched up.
+Oh no, Bob was <s>comforted</s> <b>munched</b> up.
 
 Yummy yummy gu.
 """

@@ -2,6 +2,7 @@ import TOML from '../lib/smol-toml.min.mjs';
 
 const rootEl = document.documentElement;
 
+const mainHolderEl = document.getElementById('main-holder');
 const passageNameEl = document.getElementById('passage-name');
 const passageImageEl = document.getElementById('passage-image');
 const passageTextEl = document.getElementById('passage-text');
@@ -11,6 +12,7 @@ let imageBaseURL;
 
 let story;
 let choicePassageIds = [];
+let currentPassageId;
 
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
 
@@ -31,6 +33,8 @@ function showError(msg) {
     passageTextEl.innerText = msg;
 }
 
+const ALLOWED_HTML_RE = /&lt;(\/?[iubs])&gt;/g;
+
 function showPassage(id) {
     const passage = story[id];
     if (!passage) {
@@ -38,8 +42,11 @@ function showPassage(id) {
         return;
     }
     passageNameEl.textContent = passage.name;
-    passageTextEl.innerHTML = escapeHTML(passage.text).replaceAll("\n\n", "<br><br>");
+    passageTextEl.innerHTML = escapeHTML(passage.text)
+        .replaceAll("\n\n", "<br><br>")
+        .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>');
     passageImageEl.replaceChildren();
+    passageImageEl.className = "";
     if (passage.img) {
         const img = document.createElement('img');
         img.src = new URL(passage.img.src, imageBaseURL).href;
@@ -50,8 +57,6 @@ function showPassage(id) {
             passageImageEl.className = `float-${passage.img.float}`;
         else if (passage.img.align)
             passageImageEl.className = `align-${passage.img.align}`;
-        else
-            passageImageEl.className = "";
 
         passageImageEl.appendChild(img);
     }
@@ -66,6 +71,8 @@ function showPassage(id) {
         choiceListEl.appendChild(li);
         choicePassageIds.push(choice.destId);
     }
+    mainHolderEl.style.opacity = '1';
+    location.hash = id;
 }
 
 async function main() {
@@ -95,24 +102,36 @@ async function main() {
         rootEl.style.setProperty("--font-size", config.fontSize);
     if (config.imageRendering)
         rootEl.style.setProperty("--image-rendering", config.imageRendering);
-    if  (config.fontFamily) {
-        const link = document.createElement('link');
-        link.rel = "stylesheet";
-        const family = config.fontFamily.replaceAll(' ', '+');
-        link.href = `https://fonts.googleapis.com/css2?family=${family}:ital`;
-        document.head.appendChild(link);
-        // await document.fonts.ready;
-        rootEl.style.setProperty('--font-family', config.fontFamily);
+    if (config.fontFamily) {
+        if (config.fontURL) {
+            const link = document.createElement('link');
+            link.rel = "stylesheet";
+            link.href = config.fontURL;
+            document.head.appendChild(link);
+            // await document.fonts.ready;
+        }
+        rootEl.style.setProperty('--font-family', `'${config.fontFamily}'`);
+    }
+    if (config.useBold) {
+        passageNameEl.style.fontWeight = 'bold';
+        choiceListEl.style.fontWeight = 'bold';
     }
 
     choiceListEl.addEventListener('click', ev => {
         const choiceLi = ev.target.closest('[data-choice-num]');
         if (choiceLi) {
-            const destId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
-            showPassage(destId);
+            currentPassageId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
+            mainHolderEl.style.opacity = '0';
         }
     });
-    showPassage(config.startId);
+    mainHolderEl.addEventListener('transitionend', () => {
+        if (mainHolderEl.style.opacity == '0')
+            showPassage(currentPassageId);
+    });
+    if (location.hash)
+        showPassage(location.hash.slice(1));
+    else
+        showPassage(config.startId);
 }
 
 main();
