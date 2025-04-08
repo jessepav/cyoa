@@ -71,3 +71,10 @@ html {
 img {
   max-width: 100%;
 }
+
+.passage-link {
+  cursor: pointer;
+  background-color: rgba(from var(--text-color) r g b / 0.15);
+  padding: 0px 4px;
+  border-radius: 4px;
+}

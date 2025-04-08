@@ -81,7 +81,6 @@ text = """
 Oh no, Bob was <s>comforted</s> <b>munched</b> up.
 
 Yummy yummy gu.
+
+But he is robust, and can [[hello|live again]]! Bob 4eva.
 """
-choices = [
-  { text = "Resurrect Bob", destId = "hello" }
-]

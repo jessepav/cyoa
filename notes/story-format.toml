@@ -41,12 +41,16 @@ name = "Name of Passage"
 # It is split into paragraphs at blank lines. If a paragraph ends with "==",
 # its text will be right-aligned; if it starts and ends with "==", it will
 # be centered.
+#
+# Links to other passages can be inserted using the syntax [[passageId|link text]]
 text = """
 Paragraph text the first.
 
     == Paragraph text the second ==
 
                   Paragraph text the third ==
+
+And here we [[passage5|link to another passage]].
 """
 
 # optional, if we want an image

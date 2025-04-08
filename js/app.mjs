@@ -38,6 +38,7 @@ function showError(msg) {
 
 const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
 const SPLIT_PAR_RE = /\n{2,}/;
+const PASSAGE_LINK_RE = /\[\[(\w+)\|(.*?)\]\]/g;
 
 function showPassage(id) {
     const passage = story[id];
@@ -63,7 +64,10 @@ function showPassage(id) {
         const p = document.createElement('p');
         p.style.textAlign = textAlign;
         p.innerHTML = escapeHTML(parText)
-            .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>');
+            .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>')
+            .replaceAll(PASSAGE_LINK_RE, (match, passageId, text) =>
+                `<span class="passage-link" data-passage-id="${passageId}">${text}</span>`
+            );
         return p;
     });
     passageTextEl.replaceChildren(...pars);
@@ -185,6 +189,13 @@ async function main() {
         if (currentPassageId && mainHolderEl.style.opacity == '0') {
             showPassage(currentPassageId);
             mainHolderEl.style.opacity = '1';
+        }
+    });
+    passageTextEl.addEventListener('click', ev => {
+        const linkEl = ev.target.closest('[data-passage-id]');
+        if (linkEl) {
+            currentPassageId = linkEl.dataset.passageId;
+            mainHolderEl.style.opacity = '0';
         }
     });
     if (location.hash)
