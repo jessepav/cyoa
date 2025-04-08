@@ -1,5 +1,6 @@
 import TOML from '../lib/smol-toml.min.mjs';
 import HJSON from '../lib/hjson.min.mjs';
+import { Howl } from '../lib/howler.min.mjs';
 
 const rootEl = document.documentElement;
 
@@ -14,6 +15,7 @@ let storyURL;
 let story;
 let choicePassageIds = [];
 let currentPassageId;
+let currentPassageHowl;
 
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
 
@@ -79,6 +81,18 @@ function showPassage(id) {
             passageImageEl.className = "align-center";
 
         passageImageEl.appendChild(img);
+    }
+    if (currentPassageHowl)
+        currentPassageHowl.unload();
+    if (passage.music) {
+        currentPassageHowl = new Howl({
+            src: music.src,
+            volume: music.volume ?? 1.0,
+            html5: music.stream ?? false,
+            loop: music.loop ?? false,
+            preload: true,
+            autoplay: true,
+        });
     }
 
     choicePassageIds.length = 0;
@@ -158,7 +172,7 @@ async function main() {
         const choiceLi = ev.target.closest('[data-choice-num]');
         if (choiceLi) {
             currentPassageId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
-            mainHolderEl.style.opacity = '0';
+            mainHolderEl.style.opacity = '0'; // will trigger the transitionend listener below
         }
     });
     mainHolderEl.addEventListener('transitionend', () => {

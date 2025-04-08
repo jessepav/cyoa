@@ -61,6 +61,13 @@ height = "128px"
 float = "left|right"
 align = "left|center|right"
 
+# optional, if we want music to go along with the passage
+[passage1.music]
+src = "url"  # should have an extension of wav, mp3, ogg, or webm
+volume = 1.0  # from 0.0 to 1.0 (optional)
+stream = true # true to stream audio via HTML5 Audio API, false to use WebAudio (optional)
+loop = false  # true to have audio loop until the passage is exited (optional)
+
 # The exit choices for the passage are given as the text to display,
 # and the ID of the destination passage.
 [[passage1.choices]]
