@@ -43,6 +43,10 @@ function showPassage(id) {
     const passage = story[id];
     if (!passage) {
         passageNameEl.textContent = `Passage "${id}" missing`;
+        passageTextEl.replaceChildren();
+        passageImageEl.replaceChildren();
+        currentPassageHowl?.unload();
+        choiceListEl.replaceChildren();
         return;
     }
     passageNameEl.textContent = passage.name;
@@ -99,12 +103,14 @@ function showPassage(id) {
     choicePassageIds.length = 0;
     choiceListEl.replaceChildren();
     let choiceNum = 0;
-    for (const choice of passage.choices) {
-        const li = document.createElement('li');
-        li.textContent = choice.text;
-        li.dataset.choiceNum = choiceNum++;
-        choiceListEl.appendChild(li);
-        choicePassageIds.push(choice.destId);
+    if (passage.choices) {
+        for (const choice of passage.choices) {
+            const li = document.createElement('li');
+            li.textContent = choice.text;
+            li.dataset.choiceNum = choiceNum++;
+            choiceListEl.appendChild(li);
+            choicePassageIds.push(choice.destId);
+        }
     }
     location.hash = id;
 }
