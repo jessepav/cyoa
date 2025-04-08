@@ -106,7 +106,6 @@ function showPassage(id) {
         choiceListEl.appendChild(li);
         choicePassageIds.push(choice.destId);
     }
-    mainHolderEl.style.opacity = '1';
     location.hash = id;
 }
 
@@ -177,8 +176,10 @@ async function main() {
         }
     });
     mainHolderEl.addEventListener('transitionend', () => {
-        if (currentPassageId && mainHolderEl.style.opacity == '0')
+        if (currentPassageId && mainHolderEl.style.opacity == '0') {
             showPassage(currentPassageId);
+            mainHolderEl.style.opacity = '1';
+        }
     });
     if (location.hash)
         currentPassageId = location.hash.slice(1);
