@@ -11,7 +11,13 @@
 
     useBold: false
     imageRendering: pixelated
-    startId: "hello"
+    startId: "intro"
+  }
+
+  intro: {
+    name: Bob
+    text: '''== This is a story about Bob. Click "Let's Go!" to begin =='''
+    choices: [ { text: "Let's Go!", destId: "hello" } ]
   }
 
   hello: {
@@ -32,6 +38,11 @@
       float: left
     }
 
+    music: {
+      src: bob.webm
+      loop: false
+    }
+
     choices: [
       { text: "Feed Bob Water", destId: "water" },
       { text: "Eat Bob", destId: "eat" },
@@ -46,6 +57,11 @@
       width: "484px"
       height: "212px"
       align: "center"
+    }
+    music: {
+      src: "nomnomnom.webm"
+      stream: true
+      loop: true
     }
     choices: [
       { text: "Eat him anyway", destId: "eat" },
