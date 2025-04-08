@@ -85,8 +85,9 @@ function showPassage(id) {
     if (currentPassageHowl)
         currentPassageHowl.unload();
     if (passage.music) {
+        const music = passage.music;
         currentPassageHowl = new Howl({
-            src: music.src,
+            src: new URL(music.src, storyURL).href,
             volume: music.volume ?? 1.0,
             html5: music.stream ?? false,
             loop: music.loop ?? false,

@@ -21,7 +21,12 @@ useBold = false
 imageRendering = "pixelated"
 # imageBaseURL = "https://site.com/img/"
 
-startId = "hello"
+startId = "intro"
+
+[intro]
+name = "Bob"
+text = """== This is a story about Bob. Click "Let's Go!" to begin =="""
+choices = [ { text = "Let's Go!", destId = "hello" } ]
 
 [hello]
 name = "Bob's Story"
@@ -38,6 +43,10 @@ also a rabbit named Glowy who can glow in the dark. ==
 src = "bob.png"
 width = "256px"
 float = "left"
+
+[hello.music]
+src = "bob.webm"
+loop = false
 
 [[hello.choices]]
 text = "Feed Bob Water"
@@ -60,6 +69,11 @@ src = "bob.png"
 width = "484px"
 height = "212px"
 align = "center"
+
+[water.music]
+src = "nomnomnom.webm"
+stream = true
+loop = true
 
 [eat]
 name = "Bob is Eaten"
