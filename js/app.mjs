@@ -37,7 +37,7 @@ function showError(msg) {
 }
 
 const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
-const SPLIT_PAR_RE = /\n{2,}/;
+const SPLIT_PAR_RE = /\n(?:[ \t]*\n)+/;
 const PASSAGE_LINK_RE = /\[\[(\w+)\|(.*?)\]\]/g;
 
 function showPassage(id) {
