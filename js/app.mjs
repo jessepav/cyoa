@@ -1,5 +1,4 @@
 import TOML from '../lib/smol-toml.min.mjs';
-import HJSON from '../lib/hjson.min.mjs';
 import { Howl } from '../lib/howler.min.mjs';
 
 const rootEl = document.documentElement;
@@ -17,6 +16,8 @@ let choicePassageIds = [];
 let currentPassageId;
 let currentPassageHowl;
 
+const blobUrlMap = Object.create(null);  // for filesystem mode
+
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
 
 function escapeHTML(s, nltobr = false) {
@@ -30,10 +31,6 @@ function escapeHTML(s, nltobr = false) {
           case '\n': return nltobr ? '<br>' : '\n';
         }
     });
-}
-
-function showError(msg) {
-    passageTextEl.innerText = msg;
 }
 
 const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
@@ -75,7 +72,7 @@ function showPassage(id) {
     passageImageEl.className = "";
     if (passage.img) {
         const img = document.createElement('img');
-        img.src = new URL(passage.img.src, storyURL).href;
+        img.src = blobUrlMap[passage.img.src] ?? new URL(passage.img.src, storyURL).href;
         if (passage.img.width)
             img.style.width = passage.img.width;
         if (passage.img.height)
@@ -95,7 +92,8 @@ function showPassage(id) {
     if (passage.music) {
         const music = passage.music;
         currentPassageHowl = new Howl({
-            src: new URL(music.src, storyURL).href,
+            src: blobUrlMap[music.src] ?? new URL(music.src, storyURL).href,
+            format: music.src.slice(music.src.lastIndexOf('.') + 1).toLowerCase(),
             volume: music.volume ?? 1.0,
             html5: music.stream ?? false,
             loop: music.loop ?? false,
@@ -123,27 +121,74 @@ async function main() {
     const searchParams = new URLSearchParams(location.search);
     storyURL = searchParams.get('story');
     if (!storyURL) {
-        showError('No "story" search parameter given');
-        return;
-    }
-    storyURL = new URL(storyURL, location.href).href;
-    const storyText = await fetch(storyURL, { cache: 'no-cache' }).then(res => res.ok ? res.text() : undefined);
-    if (!storyText) {
-        showError("Error fetching story from " + storyURL);
-        return;
-    }
-    try {
-        if (storyURL.endsWith(".toml"))
-            story = TOML.parse(storyText);
-        else if (storyURL.endsWith(".hjson"))
-            story = HJSON.parse(storyText);
-        else {
-            showError("Unrecognized story format");
+        const { promise, resolve, reject } = Promise.withResolvers();
+
+        const div = document.createElement('div');
+        div.style.textAlign = 'center';
+        const button = document.createElement('button');
+        button.className = "choose-dir-button";
+        button.textContent = 'Choose Story Directory';
+        div.append(button);
+        passageTextEl.append(div);
+
+        button.addEventListener('click', async () => {
+            let dirHandle;
+            try {
+                dirHandle = await window.showDirectoryPicker({ id: 'cyoa-story-dir', mode: 'read' });
+            } catch (err) {
+                return;
+            }
+            const fileNames = await Array.fromAsync(dirHandle.keys());
+            const storyFile = fileNames.find(name => name.toLowerCase().endsWith(".toml"));
+            if (!storyFile) {
+                window.alert(`I couldn't find a story file in "${dirHandle.name}"`);
+                return;
+            }
+            const storyFileHandle = await dirHandle.getFileHandle(storyFile);
+            const storyText = await storyFileHandle.getFile().then(file => file.text());
+            try {
+                story = TOML.parse(storyText);
+            } catch(err) {
+                window.alert(`Error parsing story:\n\n${err.message}`);
+                return;
+            }
+            for (const [name, passage] of Object.entries(story)) {
+                if (name == 'config')
+                    continue;
+                const urls = [];
+                if (passage.img?.src)
+                    urls.push(passage.img.src);
+                if (passage.music?.src)
+                    urls.push(passage.music.src);
+                for (const url of urls) {
+                    try {
+                        const fileHandle = await dirHandle.getFileHandle(url);
+                        const objectURL = URL.createObjectURL(await fileHandle.getFile());
+                        blobUrlMap[url] = objectURL;
+                    } catch (err) {
+                        window.alert(`I couldn't find "${url}" in your story directory`);
+                        return;
+                    }
+                }
+            }
+            console.log(`Loaded ${storyFile} + ${Object.keys(blobUrlMap).length} resources`);
+            resolve();
+        });
+        await promise;
+        div.remove();
+    } else {
+        storyURL = new URL(storyURL, location.href).href;
+        const storyText = await fetch(storyURL, { cache: 'no-cache' }).then(res => res.ok ? res.text() : undefined);
+        if (!storyText) {
+            window.alert("Error fetching story from " + storyURL);
             return;
         }
-    } catch(err) {
-        showError(`Error parsing story:\n\n${err.message}`);
-        return;
+        try {
+            story = TOML.parse(storyText);
+        } catch(err) {
+            window.alert(`Error parsing story:\n\n${err.message}`);
+            return;
+        }
     }
 
     const config = story.config ?? {};

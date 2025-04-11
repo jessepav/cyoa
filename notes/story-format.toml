@@ -1,8 +1,5 @@
 # This is a TOML document. See the spec at https://toml.io/en/v1.0.0
 
-# Note that you can also write story documents in HJSON (https://hjson.github.io)
-# See test/test-story.hjson for a conversion of test/test-story.toml
-
 [config]
 title = "Story Title"
 backgroundColor = "rgb(r g b)"
