@@ -1,12 +1,12 @@
 # This is a TOML document. See the spec at https://toml.io/en/v1.0.0
 
 [config]
-title = "Story Title"
-backgroundColor = "rgb(r g b)"
-textColor = "rgb(r g b)"
+title = "Story Title"  # sets the title of the browser tab
+backgroundColor = "rgb(r g b)"  # or any CSS color value
+textColor = "rgb(r g b)"  # or any CSS color value
 maxWidth = "750px"  # the max width of the story holder
 
-fontSize = "16px"
+fontSize = "16px"  # sets the base font size
 fontFamily = "Merriweather"  # The CSS font-family name
 # URL that will be used to load the font via a <link rel="stylesheet" href="..."> tag
 fontLinkHref = """https://fonts.googleapis.com/css2?family=Merriweather\
