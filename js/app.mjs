@@ -230,19 +230,20 @@ async function main() {
             mainHolderEl.style.opacity = '0'; // will trigger the transitionend listener below
         }
     });
+    passageTextEl.addEventListener('click', ev => {
+        const linkEl = ev.target.closest('[data-passage-id]');
+        if (linkEl) {
+            currentPassageId = linkEl.dataset.passageId;
+            mainHolderEl.style.opacity = '0'; // trigger transitionend
+        }
+    });
     mainHolderEl.addEventListener('transitionend', () => {
         if (currentPassageId && mainHolderEl.style.opacity == '0') {
             showPassage(currentPassageId);
             mainHolderEl.style.opacity = '1';
         }
     });
-    passageTextEl.addEventListener('click', ev => {
-        const linkEl = ev.target.closest('[data-passage-id]');
-        if (linkEl) {
-            currentPassageId = linkEl.dataset.passageId;
-            mainHolderEl.style.opacity = '0';
-        }
-    });
+
     if (location.hash)
         currentPassageId = location.hash.slice(1);
     else
