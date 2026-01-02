@@ -1,4 +1,4 @@
-# This is a TOML document. See the spec at https://toml.io/en/v1.0.0
+# This is a TOML document. See the spec at https://toml.io/en/v1.1.0
 
 [config]
 title = "Story Title"  # sets the title of the browser tab
