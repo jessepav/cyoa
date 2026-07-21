@@ -246,7 +246,10 @@ async function main() {
             console.log(`Loaded ${storyFile} + ${Object.keys(blobUrlMap).length} resources`);
             resolve();
         });
+        const storageButton = document.getElementById('storage-icon-button');
+        storageButton.style.display = 'none';
         await promise;
+        storageButton.style.removeProperty('display');
         div.remove();
     } else {
         storyURL = new URL(storyURL, location.href).href;
