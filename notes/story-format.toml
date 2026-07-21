@@ -43,8 +43,8 @@ statePropertiesToPersist = [
 ]
 
 # If onPassageTransition is given, it is parsed as the body of a JavaScript
-# function with four parameters: state, linkText, originPassageId,
-# destinationPassageId.  If the function returns a string, it is treated as a
+# function with four parameters: 'state', 'linkText', 'originPassageId', and
+# 'destinationPassageId'.  If the function returns a string, it is treated as a
 # passage ID, and the destinationPassageId will be replaced with the returned
 # passage ID.
 onPassageTransition = '''
@@ -52,6 +52,18 @@ onPassageTransition = '''
     state.lawStatus = 'arrested';
     return "police_station";
   }
+'''
+
+# If statusFunc is given, it is parsed as the body of a JavaScript
+# function with two parameters: 'state' and 'currentPassageId'
+# If the function returns an object, it can have one or two of the
+# 'header' and 'footer' properties, representing paragraphs that will
+# be prepended and appended to the passages normal text, respectively.
+statusFunc = '''
+  return {
+    header: "We are in <%= currentPassageId %>. The sky is above.",
+    footer: "Below is the <%= state.groundType %>."
+  };
 '''
 
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble

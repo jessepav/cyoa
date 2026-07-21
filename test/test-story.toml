@@ -27,17 +27,32 @@ stateInit = '''
 '''
 
 statePropertiesToPersist = [
-  "resurrects"
+  "resurrects", "waterAmount"
 ]
 
 onPassageTransition = '''
   const origin = originPassageId;
   const dest = destinationPassageId;
 
+  const eatable = state.waterAmount == 0;
+  state.waterAmount = Math.max(0, state.waterAmount - 0.3);
+  // console.log(`passageTransitionFunc(): state.waterAmount = ${state.waterAmount}`);
+
   if (dest == 'water')
-    state.waterAmount++;
-  else if (dest == 'eat' && state.waterAmount > 0)
+    state.waterAmount += 1.0;
+  else if (dest == 'eat' && !eatable)
     return "buff";
+'''
+
+statusFunc = '''
+  // console.log(`statusFunc(): state.waterAmount = ${state.waterAmount}`);
+  if (!["intro", "water", "eat"].includes(currentPassageId)) {
+    return {
+      footer: state.waterAmount > 0 ?
+        "Bob is feeling refreshed. ==" :
+        "Bob is thirsty and dry. =="
+    };
+  }
 '''
 
 startId = "intro"
@@ -52,7 +67,7 @@ choices = [ { text = "Let's Go!", destId = "hello" } ]
 [hello]
 name = "Bob's Story"
 text = """
-Hello, this is the story of <u>Bob</u>.
+[[hello|Hello]], this is the story of <u>Bob</u>.
 
 Bob is a nice mushroom. He lives in a forest with other mushrooms and
 also a rabbit named Glowy who can glow in the dark. ==

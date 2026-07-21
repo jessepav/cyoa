@@ -29,6 +29,7 @@ const storyState = {};
 let stateStorageKey;
 let statePropertiesToPersist;
 let passageTransitionFunc;
+let statusFunc;
 
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
 const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
@@ -73,7 +74,17 @@ function showPassage(id) {
         return;
     }
     passageNameEl.textContent = passage.name;
-    const pars = maybeRenderTemplate(passage.text)
+    let text = passage.text;
+    if (statusFunc) {
+        const statusObj = statusFunc(storyState, currentPassageId);
+        const header = statusObj?.header;
+        const footer = statusObj?.footer;
+        if (header)
+            text = header + "\n\n" + text;
+        if (footer)
+            text = text + "\n\n" + footer;
+    }
+    const pars = maybeRenderTemplate(text)
         .trim().split(SPLIT_PAR_RE)
         .map(parText => {
             parText = parText.trim();
@@ -299,6 +310,15 @@ async function main() {
             passageTransitionFunc =
                 new Function('state', 'linkText', 'originPassageId', 'destinationPassageId',
                              '"use strict";' + config.onPassageTransition);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    if (config.statusFunc) {
+        try {
+            statusFunc = new Function(
+                'state', 'currentPassageId', '"use strict";' + config.statusFunc
+            );
         } catch (err) {
             console.error(err);
         }
