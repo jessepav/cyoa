@@ -164,6 +164,11 @@ function loadState() {
 }
 
 async function main() {
+    // First, we inject our SVG so it has the flexibility of an inline element
+    fetch('img/floppy.svg').then(response => response.text()).then(svgtext => {
+        document.getElementById('storage-icon-button').innerHTML = svgtext;
+    });
+
     const searchParams = new URLSearchParams(location.search);
     storyURL = searchParams.get('story');
     if (!storyURL) {

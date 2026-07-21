@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64px" height="64px">
-  <g style="" transform="matrix(1.106667, 0, 0, 1.120433, -3.072156, -3.978671)">
-    <path d="M 6.806 7.216 L 45.092 7.216 L 57.081 18.81 L 57.081 57.156 L 6.806 57.156 L 6.806 7.216 Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.69409px;"/>
-    <rect x="14.738" y="30.568" width="34.411" height="22.121" style="fill: none; stroke: rgb(0, 0, 0); stroke-linejoin: round; stroke-width: 2.69409px;" rx="2" ry="2"/>
-    <rect x="15.52" y="7.44" width="26.813" height="16.2" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.69409px;"/>
-    <rect x="32.684" y="11.13" width="5.481" height="8.881" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-width: 2.69409px;"/>
-    <polyline style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 2.69409px;" points="20.659 48.043 44.346 48.043"/>
-    <polyline style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 2.69409px;" points="20.659 36.043 44.346 36.043"/>
-    <polyline style="fill: none; stroke: rgb(0, 0, 0); stroke-width: 2.69409px;" points="20.659 42.043 44.346 42.043"/>
-  </g>
+    <g style="" transform="matrix(1.106667, 0, 0, 1.120433, -3.072156, -3.978671)">
+    <path d="M 6.806 7.216 L 45.092 7.216 L 57.081 18.81 L 57.081 57.156 L 6.806 57.156 L 6.806 7.216 Z" style="fill: none; stroke: var(--text-color); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.69409px;"/>
+    <rect x="14.738" y="30.568" width="34.411" height="22.121" style="fill: none; stroke: var(--text-color); stroke-linejoin: round; stroke-width: 2.69409px;" rx="2" ry="2"/>
+    <rect x="15.52" y="7.44" width="26.813" height="16.2" style="fill: none; stroke: var(--text-color); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.69409px;"/>
+    <rect x="32.684" y="11.13" width="5.481" height="8.881" style="fill: none; stroke: var(--text-color); stroke-linecap: round; stroke-width: 2.69409px;"/>
+    <polyline style="fill: none; stroke: var(--text-color); stroke-width: 2.69409px;" points="20.659 48.043 44.346 48.043"/>
+    <polyline style="fill: none; stroke: var(--text-color); stroke-width: 2.69409px;" points="20.659 36.043 44.346 36.043"/>
+    <polyline style="fill: none; stroke: var(--text-color); stroke-width: 2.69409px;" points="20.659 42.043 44.346 42.043"/>
+    </g>
 </svg>
