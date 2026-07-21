@@ -28,6 +28,7 @@ const eta = new Eta({
 const storyState = {};
 let stateStorageKey;
 let statePropertiesToPersist;
+let passageTransitionFunc;
 
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
 const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
@@ -52,6 +53,13 @@ function maybeRenderTemplate(text) {
         return eta.renderString(text, storyState);
     else
         return text;
+}
+
+function getNextPassageId(linkText, originPassageId, destinationPassageId) {
+    const idOverride = passageTransitionFunc?.(
+        storyState, linkText, originPassageId, destinationPassageId
+    );
+    return (typeof idOverride === 'string') ? idOverride : destinationPassageId;
 }
 
 function showPassage(id) {
@@ -286,11 +294,21 @@ async function main() {
     statePropertiesToPersist = config.statePropertiesToPersist; // may be undefined
     if (statePropertiesToPersist)
         stateStorageKey = "cyoa:" + (config.title ?? "Unnamed Story");
+    if (config.onPassageTransition) {
+        try {
+            passageTransitionFunc =
+                new Function('state', 'linkText', 'originPassageId', 'destinationPassageId',
+                             '"use strict";' + config.onPassageTransition);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     choiceListEl.addEventListener('click', ev => {
         const choiceLi = ev.target.closest('[data-choice-num]');
         if (choiceLi) {
-            currentPassageId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
+            const destId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
+            currentPassageId = getNextPassageId(choiceLi.textContent, currentPassageId, destId);
             if (choiceLi._cyoaCode) {
                 try {
                     const func = new Function('state', '"use strict";' + choiceLi._cyoaCode);
@@ -305,7 +323,7 @@ async function main() {
     passageTextEl.addEventListener('click', ev => {
         const linkEl = ev.target.closest('[data-passage-id]');
         if (linkEl) {
-            currentPassageId = linkEl.dataset.passageId;
+            currentPassageId = getNextPassageId(linkEl.textContent, currentPassageId, linkEl.dataset.passageId);
             mainHolderEl.style.opacity = '0'; // trigger transitionend
         }
     });

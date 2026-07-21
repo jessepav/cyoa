@@ -23,11 +23,22 @@ imageRendering = "pixelated"
 
 stateInit = '''
   state.resurrects = 0;
+  state.waterAmount = 0;
 '''
 
 statePropertiesToPersist = [
   "resurrects"
 ]
+
+onPassageTransition = '''
+  const origin = originPassageId;
+  const dest = destinationPassageId;
+
+  if (dest == 'water')
+    state.waterAmount++;
+  else if (dest == 'eat' && state.waterAmount > 0)
+    return "buff";
+'''
 
 startId = "intro"
 
@@ -101,4 +112,20 @@ choices = [
   { text = "But he is robust, and can live again! Bob 4eva.",
     destId = "hello",
     code = "state.resurrects++;"}
+]
+
+[buff]
+name = "Bob got Buff!"
+text = """
+You tried to eat Bob, but you can't, because he drank
+water and got <b>buff</b>!
+"""
+img = {
+  src = "bob-buff.png",
+  width = "256px",
+  align = "center"
+}
+choices = [
+  { text = "Luckily, Bob isn't mad, and wants to stay friends",
+    destId = "hello" }
 ]

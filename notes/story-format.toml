@@ -42,6 +42,18 @@ statePropertiesToPersist = [
   "variable", "actorName"
 ]
 
+# If onPassageTransition is given, it is parsed as the body of a JavaScript
+# function with four parameters: state, linkText, originPassageId,
+# destinationPassageId.  If the function returns a string, it is treated as a
+# passage ID, and the destinationPassageId will be replaced with the returned
+# passage ID.
+onPassageTransition = '''
+  if (linkText.includes("beach") && originPassageId == "cabana") {
+    state.lawStatus = 'arrested';
+    return "police_station";
+  }
+'''
+
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble
 
 [passage1]
