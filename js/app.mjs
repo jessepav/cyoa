@@ -170,7 +170,9 @@ async function main() {
     });
 
     const searchParams = new URLSearchParams(location.search);
-    storyURL = searchParams.get('story');
+    // If globalThis.storyURL is defined (perhaps by the HTML page that loaded
+    // this script), we don't need a query string to get the story url.
+    storyURL = globalThis.storyURL ?? searchParams.get('story');
     if (!storyURL) {
         const { promise, resolve, reject } = Promise.withResolvers();
 
