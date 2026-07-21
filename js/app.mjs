@@ -1,5 +1,6 @@
 import TOML from '../lib/smol-toml.min.mjs';
 import { Howl } from '../lib/howler.min.mjs';
+import { Eta } from '../lib/eta.min.mjs';
 
 const rootEl = document.documentElement;
 
@@ -18,7 +19,20 @@ let currentPassageHowl;
 
 const blobUrlMap = Object.create(null);  // for filesystem mode
 
+const eta = new Eta({
+    autoEscape: false,
+    autoTrim: [false, false],
+    varName: 'state',
+    outputFunctionName: 'output',
+});
+const storyState = {};
+let stateStorageKey;
+let statePropertiesToPersist;
+
 const HTML_SPECIALCHARS_RE = /[<>&'"\n]/g;
+const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
+const SPLIT_PAR_RE = /\n(?:[ \t]*\n)+/;
+const PASSAGE_LINK_RE = /\[\[(\w+)\|(.*?)\]\]/g;
 
 function escapeHTML(s, nltobr = false) {
     return s.replaceAll(HTML_SPECIALCHARS_RE, (c) => {
@@ -33,9 +47,12 @@ function escapeHTML(s, nltobr = false) {
     });
 }
 
-const ALLOWED_HTML_RE = /&lt;(\/?(?:[iubs]|br))&gt;/g;
-const SPLIT_PAR_RE = /\n(?:[ \t]*\n)+/;
-const PASSAGE_LINK_RE = /\[\[(\w+)\|(.*?)\]\]/g;
+function maybeRenderTemplate(text) {
+    if (text.includes("<%"))
+        return eta.renderString(text, storyState);
+    else
+        return text;
+}
 
 function showPassage(id) {
     const passage = story[id];
@@ -48,25 +65,27 @@ function showPassage(id) {
         return;
     }
     passageNameEl.textContent = passage.name;
-    const pars = passage.text.trim().split(SPLIT_PAR_RE).map(parText => {
-        parText = parText.trim();
-        let textAlign = "left";
-        if (parText.startsWith("==") && parText.endsWith("==")) {
-            parText = parText.slice(2, -2);
-            textAlign = "center";
-        } else if (parText.endsWith("==")) {
-            parText = parText.slice(0, -2);
-            textAlign = "right";
-        }
-        const p = document.createElement('p');
-        p.style.textAlign = textAlign;
-        p.innerHTML = escapeHTML(parText)
-            .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>')
-            .replaceAll(PASSAGE_LINK_RE, (match, passageId, text) =>
-                `<span class="passage-link" data-passage-id="${passageId}">${text}</span>`
-            );
-        return p;
-    });
+    const pars = maybeRenderTemplate(passage.text)
+        .trim().split(SPLIT_PAR_RE)
+        .map(parText => {
+            parText = parText.trim();
+            let textAlign = "left";
+            if (parText.startsWith("==") && parText.endsWith("==")) {
+                parText = parText.slice(2, -2);
+                textAlign = "center";
+            } else if (parText.endsWith("==")) {
+                parText = parText.slice(0, -2);
+                textAlign = "right";
+            }
+            const p = document.createElement('p');
+            p.style.textAlign = textAlign;
+            p.innerHTML = escapeHTML(parText)
+                .replaceAll(ALLOWED_HTML_RE, (match, p1) => '<' + p1 + '>')
+                .replaceAll(PASSAGE_LINK_RE, (match, passageId, text) =>
+                    `<span class="passage-link" data-passage-id="${passageId}">${text}</span>`
+                );
+            return p;
+        });
     passageTextEl.replaceChildren(...pars);
     passageImageEl.replaceChildren();
     passageImageEl.className = "";
@@ -108,13 +127,40 @@ function showPassage(id) {
     if (passage.choices) {
         for (const choice of passage.choices) {
             const li = document.createElement('li');
-            li.textContent = choice.text;
+            li.textContent = maybeRenderTemplate(choice.text);
             li.dataset.choiceNum = choiceNum++;
+            if (choice.code)
+                li._cyoaCode = choice.code;
             choiceListEl.appendChild(li);
             choicePassageIds.push(choice.destId);
         }
     }
-    location.hash = id;
+}
+
+function saveState() {
+    if (stateStorageKey) {
+        const storageObj = {
+            __currentPassageId: currentPassageId
+        };
+        for (const prop of statePropertiesToPersist)
+            storageObj[prop] = storyState[prop];
+        window.localStorage.setItem(stateStorageKey, JSON.stringify(storageObj));
+        window.alert("Story state saved.");
+    } else {
+        window.alert("This story doesn't support saving.");
+    }
+}
+
+function loadState() {
+    const storageObj = JSON.parse(window.localStorage.getItem(stateStorageKey));
+    if (storageObj) {
+        for (const prop of statePropertiesToPersist)
+            storyState[prop] = storageObj[prop];
+        currentPassageId = storageObj.__currentPassageId;
+        mainHolderEl.style.opacity = '0';  // this will trigger the transitionend listener
+    } else {
+        window.alert("I couldn't find a save game to load!");
+    }
 }
 
 async function main() {
@@ -222,11 +268,30 @@ async function main() {
         passageNameEl.style.fontWeight = 'bold';
         choiceListEl.style.fontWeight = 'bold';
     }
+    if (config.stateInit) {
+        try {
+            const func = new Function('state', '"use strict";' + config.stateInit);
+            func(storyState);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    statePropertiesToPersist = config.statePropertiesToPersist; // may be undefined
+    if (statePropertiesToPersist)
+        stateStorageKey = "cyoa:" + (config.title ?? "Unnamed Story");
 
     choiceListEl.addEventListener('click', ev => {
         const choiceLi = ev.target.closest('[data-choice-num]');
         if (choiceLi) {
             currentPassageId = choicePassageIds[Number.parseInt(choiceLi.dataset.choiceNum)];
+            if (choiceLi._cyoaCode) {
+                try {
+                    const func = new Function('state', '"use strict";' + choiceLi._cyoaCode);
+                    func(storyState);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
             mainHolderEl.style.opacity = '0'; // will trigger the transitionend listener below
         }
     });
@@ -237,6 +302,8 @@ async function main() {
             mainHolderEl.style.opacity = '0'; // trigger transitionend
         }
     });
+    document.getElementById('save-button').addEventListener('click', saveState);
+    document.getElementById('load-button').addEventListener('click', loadState);
     mainHolderEl.addEventListener('transitionend', () => {
         if (currentPassageId && mainHolderEl.style.opacity == '0') {
             showPassage(currentPassageId);
@@ -244,10 +311,7 @@ async function main() {
         }
     });
 
-    if (location.hash)
-        currentPassageId = location.hash.slice(1);
-    else
-        currentPassageId = config.startId;
+    currentPassageId = config.startId;
     mainHolderEl.style.opacity = '0';  // this will trigger the transitionend listener
 }
 

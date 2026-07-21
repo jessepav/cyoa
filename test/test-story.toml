@@ -21,11 +21,21 @@ useBold = false
 imageRendering = "pixelated"
 # imageBaseURL = "https://site.com/img/"
 
+stateInit = '''
+  state.resurrects = 0;
+'''
+
+statePropertiesToPersist = [
+  "resurrects"
+]
+
 startId = "intro"
 
 [intro]
 name = "Bob"
-text = """== This is a story about Bob. Click "Let's Go!" to begin =="""
+text = """
+== This is a story about Bob. Click "Let's Go!" to begin ==
+"""
 choices = [ { text = "Let's Go!", destId = "hello" } ]
 
 [hello]
@@ -37,12 +47,16 @@ Bob is a nice mushroom. He lives in a forest with other mushrooms and
 also a rabbit named Glowy who can glow in the dark. ==
 
    == They are a nice group of forest creatures. ==
+
+<%= state.resurrects > 0
+      ? `Bob has been resurrected <b>${state.resurrects}</b> time(s).`
+      : "Bob has never known the Reaper's cruel hand." %>
 """
 
 [hello.img]
 src = "bob.png"
 width = "256px"
-float = "left"
+float = "right"
 
 [hello.music]
 src = "bob.webm"
@@ -81,6 +95,10 @@ text = """
 Oh no, Bob was <s>comforted</s> <b>munched</b> up.
 
 Yummy yummy gu.
-
-But he is robust, and can [[hello|live again]]! Bob 4eva.
 """
+
+choices = [
+  { text = "But he is robust, and can live again! Bob 4eva.",
+    destId = "hello",
+    code = "state.resurrects++;"}
+]

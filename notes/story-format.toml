@@ -25,8 +25,22 @@ useBold = true
 
 imageRendering = "auto|smooth|pixelated"  # corresponds to image-rendering CSS property
 
-# If no fragment identifier is given in the browser href, we start here
+# You must have a startId, and it indicates the passage name to start in.
 startId = "passage1"
+
+# If stateInit is given, it is parsed as the body of a JavaScript function with a
+# single parameter, 'state', and run before any passage is shown.
+stateInit = '''
+  state.variable = 0;
+  state.actorName = "Bob";
+'''
+
+# If statePropertiesToPersist is given, it should be an array of property names
+# in your 'state' object that will be saved whenever the user clicks Save, and
+# which is restored when the user clicks Load.
+statePropertiesToPersist = [
+  "variable", "actorName"
+]
 
 # Passage IDs should be alphanumeric identifiers, to avoid causing trouble
 
@@ -94,3 +108,25 @@ choices = [
   { text = "Choice #2", destId = "passage3" },
   { text = "Choice #3", destId = "passage4" }
 ]
+
+# ========== Template Rendering and choice code ==========
+
+# In the 'text' property of passages and choices, if you include any Eta tags
+# ('<% ... %>'), the text will be run as an Eta template, and can expand
+# variables, run JavaScript code, etc. There is one predefined variable in all
+# templates and code blocks: 'state', an empty object when the story starts.
+
+[passage_templated]
+text = '''
+It was a <%= (Math.random() > 0.5 ? "sunny" : "cloudy") %> day.
+'''
+
+# And in the choices array, each choice object can optionally have a 'code'
+# property that contains JavaScript code to run if that choice is selected.
+
+choices = [
+  { text = "Attack <%= state.enemy %> with a cucumber",
+    destId = "castle"
+    code = "state.defeatedEnemies.push(state.enemy);" }
+]
+

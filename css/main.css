@@ -24,6 +24,8 @@ html {
   margin: 1rem auto;
   transition: opacity 0.3s;
   opacity: 1;
+  position: relative;
+  padding-bottom: 34px;
 }
 
 #passage-name {
@@ -85,4 +87,52 @@ img {
   font-size: 1.2rem;
   padding: 8px;
   border-radius: 8px;
+}
+
+#storage-icon-button {
+  position: absolute;
+  inset: auto 0 0 auto;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  anchor-name: --storage-icon-button;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  overflow: hidden;  /* for the below img trick */
+
+  img {
+    width: 35px;
+    height: auto;
+    image-rendering: auto;
+    /* This is a trick to recolor the transparent PNG to any color, by translating
+       it out of its container's visible box, and then moving the drop shadow (with
+       a 0px Gaussian blur) into its place. */
+    filter: drop-shadow(0px 100px 0px var(--text-color));
+    transform: translateY(-100px);
+  }
+}
+
+#storage-buttons-popup {
+  position: absolute;
+  position-anchor: --storage-icon-button;
+  position-area: left center;
+  margin: 0;
+  border: none;
+  background: none;
+}
+
+#storage-buttons-popup:popover-open {
+  display: flex;
+  flex-flow: row nowrap;
+  column-gap: 8px;
+}
+
+#save-button, #load-button {
+  font-family: inherit;
+  font-size: 1rem;
 }
