@@ -89,7 +89,7 @@ img {
   border-radius: 8px;
 }
 
-#storage-icon-button {
+#storage-icon-button:not([hidden]) {
   position: absolute;
   inset: auto 0 0 auto;
   border: none;

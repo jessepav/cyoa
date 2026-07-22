@@ -9,6 +9,7 @@ const passageNameEl = document.getElementById('passage-name');
 const passageImageEl = document.getElementById('passage-image');
 const passageTextEl = document.getElementById('passage-text');
 const choiceListEl = document.getElementById('choice-list');
+const storageButton = document.getElementById('storage-icon-button');
 
 let storyURL;
 
@@ -57,9 +58,14 @@ function maybeRenderTemplate(text) {
 }
 
 function getNextPassageId(linkText, originPassageId, destinationPassageId) {
-    const idOverride = passageTransitionFunc?.(
-        storyState, linkText, originPassageId, destinationPassageId
-    );
+    let idOverride;
+    try {
+        idOverride = passageTransitionFunc?.(
+            storyState, linkText, originPassageId, destinationPassageId
+        );
+    } catch (err) {
+        console.error(err);
+    }
     return (typeof idOverride === 'string') ? idOverride : destinationPassageId;
 }
 
@@ -76,13 +82,17 @@ function showPassage(id) {
     passageNameEl.textContent = passage.name;
     let text = passage.text;
     if (statusFunc) {
-        const statusObj = statusFunc(storyState, currentPassageId);
-        const header = statusObj?.header;
-        const footer = statusObj?.footer;
-        if (header)
-            text = header + "\n\n" + text;
-        if (footer)
-            text = text + "\n\n" + footer;
+        try {
+            const statusObj = statusFunc(storyState, currentPassageId);
+            const header = statusObj?.header;
+            const footer = statusObj?.footer;
+            if (header)
+                text = header + "\n\n" + text;
+            if (footer)
+                text = text + "\n\n" + footer;
+        } catch (err) {
+            console.error(err);
+        }
     }
     const pars = maybeRenderTemplate(text)
         .trim().split(SPLIT_PAR_RE)
@@ -157,17 +167,13 @@ function showPassage(id) {
 }
 
 function saveState() {
-    if (stateStorageKey) {
-        const storageObj = {
-            __currentPassageId: currentPassageId
-        };
-        for (const prop of statePropertiesToPersist)
-            storageObj[prop] = storyState[prop];
-        window.localStorage.setItem(stateStorageKey, JSON.stringify(storageObj));
-        window.alert("Story state saved.");
-    } else {
-        window.alert("This story doesn't support saving.");
-    }
+    const storageObj = {
+        __currentPassageId: currentPassageId
+    };
+    for (const prop of statePropertiesToPersist)
+        storageObj[prop] = storyState[prop];
+    window.localStorage.setItem(stateStorageKey, JSON.stringify(storageObj));
+    window.alert("Story state saved.");
 }
 
 function loadState() {
@@ -246,10 +252,7 @@ async function main() {
             console.log(`Loaded ${storyFile} + ${Object.keys(blobUrlMap).length} resources`);
             resolve();
         });
-        const storageButton = document.getElementById('storage-icon-button');
-        storageButton.style.display = 'none';
         await promise;
-        storageButton.style.removeProperty('display');
         div.remove();
     } else {
         storyURL = new URL(storyURL, location.href).href;
@@ -306,8 +309,10 @@ async function main() {
         }
     }
     statePropertiesToPersist = config.statePropertiesToPersist; // may be undefined
-    if (statePropertiesToPersist)
+    if (statePropertiesToPersist) {
         stateStorageKey = "cyoa:" + (config.title ?? "Unnamed Story");
+        storageButton.hidden = false;
+    }
     if (config.onPassageTransition) {
         try {
             passageTransitionFunc =
@@ -352,8 +357,9 @@ async function main() {
     });
     document.getElementById('save-button').addEventListener('click', saveState);
     document.getElementById('load-button').addEventListener('click', loadState);
-    mainHolderEl.addEventListener('transitionend', () => {
-        if (currentPassageId && mainHolderEl.style.opacity == '0') {
+    mainHolderEl.addEventListener('transitionend', ev => {
+        if (ev.target == mainHolderEl && ev.propertyName == 'opacity'
+            && currentPassageId && mainHolderEl.style.opacity == '0') {
             showPassage(currentPassageId);
             mainHolderEl.style.opacity = '1';
         }
